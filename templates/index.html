@@ -13,66 +13,139 @@
   <!-- NAVBAR -->
   <nav>
     <div class="navbar">
-    <div class="logo">
-      <!-- <img href="{{ url_for('static', filename='images/DINEWISE-removebg-preview.jpg') }}" alt="logo"></div> -->
-      <img src="{{ url_for('static', filename='images/DINEWISE-removebg-preview.png') }}" alt="Logo">
-      
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/DINEWISE-removebg-preview.png') }}" alt="Logo">
+      </div>
       <div class="navbar-option">
         <ul>
-          <li><a href="index.html">HOME</a></li>
-          <li><a href="#">RESTURANT--DETAILS</a></li>
-          <li><a href="login.html">LOG IN</a></li>
-          <li> <a href="contactus.html">CONTACT  US</a></li>
+          <li><a href="/">HOME</a></li>
+          <li><a href="#">RESTAURANT DETAILS</a></li>
+          <li><a href="/login">LOG IN</a></li>
+          <li><a href="/contact">CONTACT US</a></li>
         </ul>
       </div>
-  </div>
-   <!-- HERO-SECTION -->
-   <div class="hero-section">
+    </div>
+  </nav>
+
+  <!-- HERO-SECTION -->
+  <div class="hero-section">
     <div class="heading">
       <h1 id="data">Explore culinary excellence with <h1 id="w_name">DINEWISE</h1> <br></h1>
       <p>Let the modern allure of Roboto font guide you <br> through personalized dining recommendations. <br>
       Elevate your food journey effortlessly, discovering <br> extraordinary flavors tailored just for you.</p>
-      <button class="btn fourth"><a href="log-in">LOG IN</a></button>
+      <button class="btn fourth"><a href="/login">LOG IN</a></button>
     </div>
     <div class="h-image">
-      <img src="hero.png" alt="Picture">
+      <img src="{{ url_for('static', filename='images/hero.png') }}" alt="Picture">
     </div>
-    
   </div>
-  
-  </nav>
   <br><br><br>
-  
- 
 
- <!-- FOOTER -->
- <div class="footer_main">
- <div class="footer">
-  <div class="company">
-<h1>DINEWISE</h1>
-<ul>
-  <li><a href="index.html">HOME</a></li>
-  <li><a href="#">RESTURANT--DETAILS</a></li>
-  <li><a href="login.html">LOG IN</a></li>
-  <li> <a href="#">CONTACT  US</a></li>
-</ul>
-<hr>
-</div>
-<div class="contact">
-  <h1>CONTACT</h1>
-  <i id="l_icon" class="fa-solid fa-location-dot"></i>
-  <p>123, lahore , Pakistan</p><br>
-  <i id="p_icon" class="fa-solid fa-phone"></i>
-  <p>+92300-1234567</p><br>
-  <i id="p_icon"  class="fa-solid fa-envelope"></i>
-  <p>info@gmail.com</p>
-  <hr>
-</div>
+  <!-- RESTAURANT RECOMMENDATION FORM -->
+  <div class="recommendation-form">
+    <form method="post">
+      <label for="city">Select City:</label>
+      <select name="city" id="city">
+        {% for city in cities %}
+          <option value="{{ city }}">{{ city }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label for="cuisine_type">Select Cuisine Type:</label>
+      <select name="cuisine_type" id="cuisine_type">
+        {% for cuisine in cuisines %}
+          <option value="{{ cuisine }}">{{ cuisine }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label for="location">Select Location:</label>
+      <select name="location" id="location">
+        {% for location in locations %}
+          <option value="{{ location }}">{{ location }}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label for="min_rating">Enter Minimum Rating:</label>
+      <input type="text" name="min_rating" id="min_rating">
+      <br>
+      <button type="submit">Generate Results</button>
+    </form>
+  </div>
+  <br><br><br>
 
- </div>
- <div class="rights">
-  <h2>DINEWISE , ALL RIGHT RESERVED.DESIGNED BY SUPERIOR UNIVERSITY STUDENTS</h2>
- </div>
-</div>
+  <!-- RECOMMENDED RESTAURANTS -->
+  {% if filtered_restaurants is not none %}
+    <h2>Recommended Restaurants</h2>
+    {% if not filtered_restaurants.empty %}
+      <table>
+        <tr>
+          <th>Restaurant Name</th>
+          <th>Cuisine</th>
+          <th>Location</th>
+          <th>Rating</th>
+        </tr>
+        {% for index, restaurant in filtered_restaurants.iterrows() %}
+          <tr>
+            <td>{{ restaurant['Restaurant Name'] }}</td>
+            <td>{{ restaurant['Cuisine'] }}</td>
+            <td>{{ restaurant['Location'] }}</td>
+            <td>{{ restaurant['Rating'] }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>No restaurants found matching the selected criteria.</p>
+    {% endif %}
+  {% endif %}
+
+  <!-- SIMILAR RESTAURANTS -->
+  {% if recommendations is not none %}
+    <h2>Similar Restaurants</h2>
+    <table>
+      <tr>
+        <th>Restaurant Name</th>
+        <th>Cuisine</th>
+        <th>Location</th>
+        <th>Rating</th>
+      </tr>
+      {% for index, restaurant in recommendations.iterrows() %}
+        <tr>
+          <td>{{ restaurant['Restaurant Name'] }}</td>
+          <td>{{ restaurant['Cuisine'] }}</td>
+          <td>{{ restaurant['Location'] }}</td>
+          <td>{{ restaurant['Rating'] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+
+  <!-- FOOTER -->
+  <div class="footer_main">
+    <div class="footer">
+      <div class="company">
+        <h1>DINEWISE</h1>
+        <ul>
+          <li><a href="/">HOME</a></li>
+          <li><a href="#">RESTAURANT DETAILS</a></li>
+          <li><a href="/login">LOG IN</a></li>
+          <li><a href="/contact">CONTACT US</a></li>
+        </ul>
+        <hr>
+      </div>
+      <div class="contact">
+        <h1>CONTACT</h1>
+        <i id="l_icon" class="fa-solid fa-location-dot"></i>
+        <p>123, Lahore, Pakistan</p><br>
+        <i id="p_icon" class="fa-solid fa-phone"></i>
+        <p>+92300-1234567</p><br>
+        <i id="p_icon" class="fa-solid fa-envelope"></i>
+        <p>info@gmail.com</p>
+        <hr>
+      </div>
+    </div>
+    <div class="rights">
+      <h2>DINEWISE, ALL RIGHTS RESERVED. DESIGNED BY SUPERIOR UNIVERSITY STUDENTS</h2>
+    </div>
+  </div>
 </body>
 </html>
